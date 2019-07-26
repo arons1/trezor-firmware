@@ -68,12 +68,12 @@ class TestMsgResetDeviceT2(TrezorTest):
 
             # confirm recovery seed check
             btn_code = yield
-            assert btn_code == B.ResetDevice
+            assert btn_code == B.Success
             self.client.debug.press_yes()
 
             # confirm success
             btn_code = yield
-            assert btn_code == B.ResetDevice
+            assert btn_code == B.Success
             self.client.debug.press_yes()
 
         os_urandom = mock.Mock(return_value=EXTERNAL_ENTROPY)
@@ -85,8 +85,8 @@ class TestMsgResetDeviceT2(TrezorTest):
                     proto.ButtonRequest(code=B.ResetDevice),
                     proto.ButtonRequest(code=B.ResetDevice),
                     proto.ButtonRequest(code=B.ResetDevice),
-                    proto.ButtonRequest(code=B.ResetDevice),
-                    proto.ButtonRequest(code=B.ResetDevice),
+                    proto.ButtonRequest(code=B.Success),
+                    proto.ButtonRequest(code=B.Success),
                     proto.Success(),
                     proto.Features(),
                 ]
@@ -171,12 +171,12 @@ class TestMsgResetDeviceT2(TrezorTest):
 
             # confirm recovery seed check
             btn_code = yield
-            assert btn_code == B.ResetDevice
+            assert btn_code == B.Success
             self.client.debug.press_yes()
 
             # confirm success
             btn_code = yield
-            assert btn_code == B.ResetDevice
+            assert btn_code == B.Success
             self.client.debug.press_yes()
 
         os_urandom = mock.Mock(return_value=EXTERNAL_ENTROPY)
@@ -191,8 +191,8 @@ class TestMsgResetDeviceT2(TrezorTest):
                     proto.ButtonRequest(code=B.ResetDevice),
                     proto.ButtonRequest(code=B.ResetDevice),
                     proto.ButtonRequest(code=B.ResetDevice),
-                    proto.ButtonRequest(code=B.ResetDevice),
-                    proto.ButtonRequest(code=B.ResetDevice),
+                    proto.ButtonRequest(code=B.Success),
+                    proto.ButtonRequest(code=B.Success),
                     proto.Success(),
                     proto.Features(),
                 ]
