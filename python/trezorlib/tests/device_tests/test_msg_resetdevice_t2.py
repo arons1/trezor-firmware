@@ -14,7 +14,6 @@
 # You should have received a copy of the License along with this library.
 # If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.
 
-import time
 from unittest import mock
 
 import pytest
@@ -55,19 +54,17 @@ class TestMsgResetDeviceT2(TrezorTest):
             assert btn_code == B.ResetDevice
             # 12 words, 3 pages
             for i in range(3):
-                time.sleep(1)
                 words.extend(self.client.debug.state().reset_word.split())
                 if i < 2:
                     self.client.debug.swipe_down()
                 else:
                     # last page is confirmation
-                    self.client.debug.press_yes()
+                    self.client.debug.press_yes(wait=True)
 
             # check backup words
             for _ in range(3):
-                time.sleep(1)
                 index = self.client.debug.state().reset_word_pos
-                self.client.debug.input(words[index])
+                self.client.debug.input(words[index], wait=True)
 
             # confirm recovery seed check
             btn_code = yield
@@ -160,19 +157,17 @@ class TestMsgResetDeviceT2(TrezorTest):
             assert btn_code == B.ResetDevice
             # 12 words, 3 pages
             for i in range(3):
-                time.sleep(1)
                 words.extend(self.client.debug.state().reset_word.split())
                 if i < 2:
                     self.client.debug.swipe_down()
                 else:
                     # last page is confirmation
-                    self.client.debug.press_yes()
+                    self.client.debug.press_yes(wait=True)
 
             # check backup words
             for _ in range(3):
-                time.sleep(1)
                 index = self.client.debug.state().reset_word_pos
-                self.client.debug.input(words[index])
+                self.client.debug.input(words[index], wait=True)
 
             # confirm recovery seed check
             btn_code = yield

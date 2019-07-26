@@ -14,7 +14,6 @@
 # You should have received a copy of the License along with this library.
 # If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.
 
-import time
 
 import pytest
 
@@ -72,8 +71,7 @@ class TestMsgRecoverydeviceT2(TrezorTest):
         assert ret == proto.ButtonRequest(code=proto.ButtonRequestType.MnemonicInput)
         self.client.transport.write(proto.ButtonAck())
         for word in mnemonic:
-            time.sleep(1)
-            self.client.debug.input(word)
+            self.client.debug.input(word, wait=True)
         ret = self.client.transport.read()
 
         # Confirm success
@@ -128,8 +126,7 @@ class TestMsgRecoverydeviceT2(TrezorTest):
         assert ret == proto.ButtonRequest(code=proto.ButtonRequestType.MnemonicInput)
         self.client.transport.write(proto.ButtonAck())
         for word in mnemonic:
-            time.sleep(1)
-            self.client.debug.input(word)
+            self.client.debug.input(word, wait=True)
         ret = self.client.transport.read()
 
         # Confirm success
