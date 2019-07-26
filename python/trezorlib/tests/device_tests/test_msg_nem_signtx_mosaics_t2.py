@@ -14,7 +14,6 @@
 # You should have received a copy of the License along with this library.
 # If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.
 
-import time
 
 import pytest
 
@@ -174,13 +173,12 @@ class TestMsgNEMSignTxMosaics(TrezorTest):
             # Confirm Action
             btn_code = yield
             assert btn_code == B.ConfirmOutput
-            self.client.debug.press_yes()
+            self.client.debug.press_yes(wait=True)
 
             # Swipe and confirm
-            time.sleep(1)
-            for i in range(num_of_swipes):
+            yield
+            for _ in range(num_of_swipes):
                 self.client.debug.swipe_down()
-                time.sleep(1)
             self.client.debug.press_yes()
 
             # Confirm Action
@@ -196,6 +194,7 @@ class TestMsgNEMSignTxMosaics(TrezorTest):
         with self.client:
             self.client.set_expected_responses(
                 [
+                    proto.ButtonRequest(code=B.ConfirmOutput),
                     proto.ButtonRequest(code=B.ConfirmOutput),
                     proto.ButtonRequest(code=B.ConfirmOutput),
                     proto.ButtonRequest(code=B.SignTx),
