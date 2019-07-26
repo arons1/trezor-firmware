@@ -256,8 +256,7 @@ class signal(Syscall):
     def _deliver(self) -> None:
         if self.task is not None and self.value is not _NO_VALUE:
             schedule(self.task, self.value)
-            self.task = None
-            self.value = _NO_VALUE
+            self.reset()
 
     def __iter__(self) -> Task:  # type: ignore
         try:

@@ -59,10 +59,6 @@ class DebugLink:
             _, matrix = self.read_pin()
         return "".join([str(matrix.index(p) + 1) for p in pin])
 
-    def read_layout(self):
-        obj = self._call(proto.DebugLinkGetState())
-        return obj.layout
-
     def read_mnemonic_secret(self):
         obj = self._call(proto.DebugLinkGetState())
         return obj.mnemonic_secret
@@ -87,34 +83,36 @@ class DebugLink:
         obj = self._call(proto.DebugLinkGetState())
         return obj.passphrase_protection
 
-    def input(self, word=None, button=None, swipe=None):
+    def input(self, word=None, button=None, swipe=None, wait=False):
         if not self.allow_interactions:
             return
-        decision = proto.DebugLinkDecision()
-        if button is not None:
-            decision.yes_no = button
-        elif word is not None:
-            decision.input = word
-        elif swipe is not None:
-            decision.up_down = swipe
-        else:
-            raise ValueError("You need to provide input data.")
-        self._call(decision, nowait=True)
+            # TODO what if wait is True?
 
-    def press_button(self, yes_no):
-        self._call(proto.DebugLinkDecision(yes_no=yes_no), nowait=True)
+        args = sum(a is not None for a in (word, button, swipe))
+        if args != 1:
+            raise ValueError("Invalid input - must use one of word, button, swipe")
 
-    def press_yes(self):
-        self.input(button=True)
+        decision = proto.DebugLinkDecision(
+            wait=wait, yes_no=button, up_down=swipe, input=word
+        )
+        self._call(decision, nowait=not wait)
 
-    def press_no(self):
-        self.input(button=False)
+    def press_yes(self, wait=False):
+        self.input(button=True, wait=wait)
 
-    def swipe_up(self):
-        self.input(swipe=True)
+    def press_no(self, wait=False):
+        self.input(button=False, wait=wait)
 
-    def swipe_down(self):
-        self.input(swipe=False)
+    # swipe_up and swipe_down wait by default
+    #
+    # ideally all inputs would wait by default, but then they would fail on T1. swipes
+    # only exist on TT, so we can enforce the wait
+
+    def swipe_up(self, wait=True):
+        self.input(swipe=True, wait=wait)
+
+    def swipe_down(self, wait=True):
+        self.input(swipe=False, wait=wait)
 
     def stop(self):
         self._call(proto.DebugLinkStop(), nowait=True)
